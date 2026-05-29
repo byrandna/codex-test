@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>城市更新项目收益测算</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Urban Renewal ROI</p>
+            <h1>城市更新项目收益测算</h1>
+          </div>
+          <div class="project-tag">购物中心样板</div>
+        </header>
+
+        <section class="layout">
+          <form class="panel inputs" id="calculatorForm">
+            <div class="section-heading">
+              <h2>项目输入</h2>
+              <button class="ghost-button" type="button" id="resetButton">重置</button>
+            </div>
+
+            <div class="tier-switch" aria-label="测算层级">
+              <button type="button" class="tier-button active" data-tier="1">
+                <span>一级</span>
+                <strong>快速判断</strong>
+                <small>少量参数，先看方向</small>
+              </button>
+              <button type="button" class="tier-button" data-tier="2">
+                <span>二级</span>
+                <strong>AI收入测算</strong>
+                <small>新增市场与品牌因子</small>
+              </button>
+              <button type="button" class="tier-button" data-tier="3">
+                <span>三级</span>
+                <strong>方案成本测算</strong>
+                <small>新增建筑和改造工程量</small>
+              </button>
+            </div>
+
+            <label class="brief-field">
+              向 AI Agent 描述你的项目
+              <textarea id="projectBrief">我有一个运营多年的购物中心，想判断是否值得改造，并估算改造后的收益、成本和回收期。</textarea>
+            </label>
+
+            <div class="tier-card tier-one">
+              <div class="tier-card-head">
+                <span class="level-pill">一级</span>
+                <div>
+                  <h3>基础快速判断</h3>
+                  <p>用最少信息先判断项目是否值得继续看。</p>
+                </div>
+              </div>
+
+              <label>
+                项目名称
+                <input id="projectName" type="text" value="老厂房改造购物中心" />
+              </label>
+
+              <label>
+                地址/片区
+                <input id="location" type="text" value="核心商圈外延 1.5km" />
+              </label>
+
+              <div class="grid-2">
+                <label>
+                  建筑面积
+                  <div class="input-unit">
+                    <input id="area" type="number" min="1000" step="500" value="52000" />
+                    <span>㎡</span>
+                  </div>
+                </label>
+                <label>
+                  可出租比例
+                  <div class="input-unit">
+                    <input id="rentableRatio" type="number" min="30" max="95" step="1" value="72" />
+                    <span>%</span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="grid-2">
+                <label>
+                  日均客流
+                  <div class="input-unit">
+                    <input id="footfall" type="number" min="1000" step="500" value="36000" />
+                    <span>人/日</span>
+                  </div>
+                </label>
+                <label>
+                  出租率
+                  <div class="input-unit">
+                    <input id="occupancy" type="number" min="30" max="100" step="1" value="88" />
+                    <span>%</span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="grid-2">
+                <label>
+                  城市层级
+                  <select id="cityTier">
+                    <option value="beishang">北京/上海</option>
+                    <option value="newFirst" selected>强二线/新一线</option>
+                    <option value="second">普通二线</option>
+                    <option value="third">三线城市</option>
+                  </select>
+                </label>
+                <label>
+                  项目定位
+                  <select id="positioning">
+                    <option value="young">年轻潮流</option>
+                    <option value="family" selected>家庭亲子</option>
+                    <option value="community">社区生活</option>
+                    <option value="traditional">传统综合</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <div class="subsection tier-section tier-card tier-two" data-min-tier="2">
+              <div class="tier-card-head">
+                <span class="level-pill">二级</span>
+                <div>
+                  <h3>AI收入测算新增</h3>
+                  <p>在一级基础上补充城市、商圈、竞品、交通、品牌与业态信息。</p>
+                </div>
+              </div>
+              <div class="grid-2">
+                <label>
+                  净人口流入
+                  <select id="populationFlow">
+                    <option value="strongIn">持续净流入</option>
+                    <option value="stable" selected>基本稳定</option>
+                    <option value="slightOut">轻微流出</option>
+                    <option value="outflow">明显流出</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="grid-2">
+                <label>
+                  城市客群结构
+                  <select id="consumerProfile">
+                    <option value="young">年轻客群占优</option>
+                    <option value="family" selected>家庭客群占优</option>
+                    <option value="balanced">结构均衡</option>
+                    <option value="senior">老龄化明显</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="grid-2">
+                <label>
+                  区域成熟度
+                  <select id="districtMaturity">
+                    <option value="core">成熟核心区</option>
+                    <option value="mature" selected>成熟居住/办公区</option>
+                    <option value="growth">成长新区</option>
+                    <option value="early">导入期新区</option>
+                  </select>
+                </label>
+                <label>
+                  未来发展预期
+                  <select id="futureArea">
+                    <option value="policy">政策/产业强导入</option>
+                    <option value="normal" selected>正常发展</option>
+                    <option value="weak">动能偏弱</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="grid-2">
+                <label>
+                  产业配套
+                  <select id="industrySupport">
+                    <option value="strong">办公/产业成熟</option>
+                    <option value="normal" selected>居住办公均衡</option>
+                    <option value="weak">配套仍需培育</option>
+                  </select>
+                </label>
+                <label>
+                  5公里同类竞品
+                  <div class="input-unit">
+                    <input id="competitors" type="number" min="0" step="1" value="3" />
+                    <span>个</span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="grid-2">
+                <label>
+                  轨交条件
+                  <select id="metroAccess">
+                    <option value="direct">地铁直连/上盖</option>
+                    <option value="near" selected>800米内有站点</option>
+                    <option value="bus">公交为主</option>
+                    <option value="weak">公共交通弱</option>
+                  </select>
+                </label>
+                <label>
+                  道路展示面
+                  <select id="roadExposure">
+                    <option value="corner">主干道交叉口</option>
+                    <option value="main" selected>临主干道</option>
+                    <option value="secondary">次干道</option>
+                    <option value="inside">街区内部</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="grid-2">
+                <label>
+                  招视性
+                  <select id="visibility">
+                    <option value="high">强展示面</option>
+                    <option value="medium" selected>一般展示面</option>
+                    <option value="low">可见性较弱</option>
+                  </select>
+                </label>
+                <label>
+                  品牌租金锚点
+                  <select id="brandAnchor">
+                    <option value="none" selected>暂无强锚点</option>
+                    <option value="popmart">潮玩/泡泡玛特类</option>
+                    <option value="fnb">全国连锁餐饮</option>
+                    <option value="supermarket">精品超市</option>
+                    <option value="cinema">影院/大主力店</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="mix-grid">
+                <label>
+                  零售
+                  <div class="input-unit">
+                    <input id="retailMix" type="number" min="0" max="100" step="1" value="32" />
+                    <span>%</span>
+                  </div>
+                </label>
+                <label>
+                  餐饮
+                  <div class="input-unit">
+                    <input id="fnbMix" type="number" min="0" max="100" step="1" value="28" />
+                    <span>%</span>
+                  </div>
+                </label>
+                <label>
+                  体验
+                  <div class="input-unit">
+                    <input id="experienceMix" type="number" min="0" max="100" step="1" value="18" />
+                    <span>%</span>
+                  </div>
+                </label>
+                <label>
+                  儿童
+                  <div class="input-unit">
+                    <input id="childrenMix" type="number" min="0" max="100" step="1" value="12" />
+                    <span>%</span>
+                  </div>
+                </label>
+                <label>
+                  主力店
+                  <div class="input-unit">
+                    <input id="anchorMix" type="number" min="0" max="100" step="1" value="10" />
+                    <span>%</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <label>
+                人工租金修正
+                <div class="input-unit">
+                  <input id="rentAdjustment" type="number" min="-30" max="30" step="1" value="0" />
+                  <span>%</span>
+                </div>
+              </label>
+              <label>
+                物业运营成本率
+                <div class="input-unit">
+                  <input id="opexRatio" type="number" min="5" max="60" step="1" value="28" />
+                  <span>%</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="subsection tier-section tier-card tier-three" data-min-tier="3">
+              <div class="tier-card-head">
+                <span class="level-pill">三级</span>
+                <div>
+                  <h3>方案成本测算新增</h3>
+                  <p>在二级收入基础上，用建筑方案和改造工程量校准面积与成本。</p>
+                </div>
+              </div>
+              <div class="grid-2">
+                <label>
+                  商业楼层数
+                  <div class="input-unit">
+                    <input id="floorCount" type="number" min="1" step="1" value="5" />
+                    <span>层</span>
+                  </div>
+                </label>
+                <label>
+                  单层平均面积
+                  <div class="input-unit">
+                    <input id="avgFloorArea" type="number" min="500" step="100" value="9000" />
+                    <span>㎡</span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="grid-2">
+                <label>
+                  方案可出租效率
+                  <div class="input-unit">
+                    <input id="schemeRentableRatio" type="number" min="30" max="95" step="1" value="68" />
+                    <span>%</span>
+                  </div>
+                </label>
+                <label>
+                  公区/后勤面积
+                  <div class="input-unit">
+                    <input id="commonArea" type="number" min="0" step="100" value="8200" />
+                    <span>㎡</span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="grid-2">
+                <label>
+                  停车位
+                  <div class="input-unit">
+                    <input id="parkingSpaces" type="number" min="0" step="10" value="780" />
+                    <span>个</span>
+                  </div>
+                </label>
+                <label>
+                  地库改造面积
+                  <div class="input-unit">
+                    <input id="parkingRenovationArea" type="number" min="0" step="100" value="16000" />
+                    <span>㎡</span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="grid-2">
+                <label>
+                  轻改造面积
+                  <div class="input-unit">
+                    <input id="lightRenovationArea" type="number" min="0" step="100" value="26000" />
+                    <span>㎡</span>
+                  </div>
+                </label>
+                <label>
+                  重改造面积
+                  <div class="input-unit">
+                    <input id="heavyRenovationArea" type="number" min="0" step="100" value="18000" />
+                    <span>㎡</span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="grid-2">
+                <label>
+                  外立面改造面积
+                  <div class="input-unit">
+                    <input id="facadeArea" type="number" min="0" step="100" value="5200" />
+                    <span>㎡</span>
+                  </div>
+                </label>
+                <label>
+                  机电更新强度
+                  <select id="mepLevel">
+                    <option value="light">局部更新</option>
+                    <option value="medium" selected>系统更新</option>
+                    <option value="heavy">全面更新</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <label>
+                收购/土地成本
+                <div class="input-unit">
+                  <input id="acquisitionCost" type="number" min="0" step="1000" value="98000" />
+                  <span>万元</span>
+                </div>
+              </label>
+              <label>
+                改造 CAPEX
+                <div class="input-unit">
+                  <input id="capex" type="number" min="0" step="100" value="4200" />
+                  <span>元/㎡</span>
+                </div>
+              </label>
+            </div>
+
+            <label>
+              其他年收入
+              <div class="input-unit">
+                <input id="otherIncome" type="number" min="0" step="100" value="1800" />
+                <span>万元/年</span>
+              </div>
+            </label>
+          </form>
+
+          <section class="results">
+            <div class="summary-band">
+              <div>
+                <p class="eyebrow">测算结果</p>
+                <h2 id="resultProjectName">老厂房改造购物中心</h2>
+                <p id="resultLocation">核心商圈外延 1.5km</p>
+              </div>
+              <div class="rating" id="rating">稳健</div>
+            </div>
+
+            <section class="decision-card" id="decisionCard">
+              <div class="decision-main">
+                <span class="decision-kicker">五分钟决策</span>
+                <h2 id="decisionTitle">建议继续推进</h2>
+                <p id="decisionSummary">收入和回收期初步成立，建议进入下一步验证。</p>
+              </div>
+              <div class="decision-side">
+                <div>
+                  <span>下一步</span>
+                  <strong id="nextAction">进入 AI 收入测算</strong>
+                </div>
+                <button class="action-button" type="button" id="actionButton">继续深化</button>
+              </div>
+            </section>
+
+            <div class="decision-grid">
+              <section class="panel insight-card">
+                <div class="section-heading">
+                  <h2>核心原因</h2>
+                </div>
+                <div class="insight-list" id="reasonList"></div>
+              </section>
+              <section class="panel insight-card">
+                <div class="section-heading">
+                  <h2>主要风险</h2>
+                </div>
+                <div class="insight-list" id="riskList"></div>
+              </section>
+            </div>
+
+            <section class="panel detail-panel agent-report">
+              <div class="section-heading">
+                <div>
+                  <span class="result-label agent-label">Agent 会诊</span>
+                  <h2>AI 投前会诊报告</h2>
+                </div>
+              </div>
+              <div class="agent-grid">
+                <article class="agent-card market-agent">
+                  <span>市场调研 Agent</span>
+                  <strong>判断租金与商圈</strong>
+                  <p id="marketAgentText"></p>
+                </article>
+                <article class="agent-card finance-agent">
+                  <span>财务测算 Agent</span>
+                  <strong>判断回报与退出</strong>
+                  <p id="financeAgentText"></p>
+                </article>
+                <article class="agent-card design-agent">
+                  <span>方案设计 Agent</span>
+                  <strong>判断改造抓手</strong>
+                  <p id="designAgentText"></p>
+                </article>
+                <article class="agent-card operation-agent">
+                  <span>运营招商 Agent</span>
+                  <strong>判断业态与承接</strong>
+                  <p id="operationAgentText"></p>
+                </article>
+              </div>
+              <div class="agent-final">
+                <div>
+                  <span>综合报告</span>
+                  <p id="agentReportSummary"></p>
+                </div>
+                <div>
+                  <span>下一轮尽调清单</span>
+                  <ul id="agentChecklist"></ul>
+                </div>
+              </div>
+            </section>
+
+            <div class="metrics-grid">
+              <article class="metric primary">
+                <span>资本回报率</span>
+                <strong id="roi">0.0%</strong>
+                <small>NOI / 总投资</small>
+              </article>
+              <article class="metric">
+                <span>投资回收期</span>
+                <strong id="payback">0.0 年</strong>
+                <small>总投资 / NOI</small>
+              </article>
+              <article class="metric">
+                <span>年租金收入</span>
+                <strong id="annualRent">0 万</strong>
+                <small>有效租金 × 可租面积</small>
+              </article>
+              <article class="metric">
+                <span>NOI</span>
+                <strong id="noi">0 万</strong>
+                <small>收入扣除运营成本</small>
+              </article>
+            </div>
+
+            <section class="panel detail-panel result-card result-one">
+              <div class="section-heading">
+                <div>
+                  <span class="result-label">一级输出</span>
+                  <h2>关键假设</h2>
+                </div>
+              </div>
+              <div class="assumption-list">
+                <div>
+                  <span>有效租金</span>
+                  <strong id="effectiveRent">0 元/㎡/日</strong>
+                </div>
+                <div>
+                  <span>可租面积</span>
+                  <strong id="rentableArea">0 ㎡</strong>
+                </div>
+                <div>
+                  <span>总投资</span>
+                  <strong id="totalInvestment">0 万元</strong>
+                </div>
+                <div>
+                  <span>客流修正系数</span>
+                  <strong id="trafficFactor">0.00</strong>
+                </div>
+                <div>
+                  <span>AI市场基准租金</span>
+                  <strong id="aiBaseRent">0 元/㎡/日</strong>
+                </div>
+                <div>
+                  <span>业态组合系数</span>
+                  <strong id="mixFactor">0.00</strong>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel detail-panel tier-section result-card result-two" data-min-tier="2">
+              <div class="section-heading">
+                <div>
+                  <span class="result-label">二级新增</span>
+                  <h2>租金预测拆解</h2>
+                </div>
+              </div>
+              <div class="rent-ai">
+                <div class="rent-score">
+                  <span>租金条件评分</span>
+                  <strong id="rentScore">0</strong>
+                  <small id="rentConfidence">样本假设完整度</small>
+                </div>
+                <div class="factor-list" id="factorList"></div>
+              </div>
+            </section>
+
+            <section class="panel detail-panel tier-section result-card result-three" data-min-tier="3">
+              <div class="section-heading">
+                <div>
+                  <span class="result-label">三级新增</span>
+                  <h2>方案成本拆解</h2>
+                </div>
+              </div>
+              <div class="assumption-list">
+                <div>
+                  <span>方案建筑面积</span>
+                  <strong id="schemeArea">0 ㎡</strong>
+                </div>
+                <div>
+                  <span>方案可租面积</span>
+                  <strong id="schemeRentableArea">0 ㎡</strong>
+                </div>
+                <div>
+                  <span>轻改造成本</span>
+                  <strong id="lightRenovationCost">0 万</strong>
+                </div>
+                <div>
+                  <span>重改造成本</span>
+                  <strong id="heavyRenovationCost">0 万</strong>
+                </div>
+                <div>
+                  <span>地库/外立面成本</span>
+                  <strong id="parkingFacadeCost">0 万</strong>
+                </div>
+                <div>
+                  <span>机电更新成本</span>
+                  <strong id="mepCost">0 万</strong>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel detail-panel">
+              <div class="section-heading">
+                <h2>敏感性观察</h2>
+              </div>
+              <div class="sensitivity" id="sensitivity"></div>
+            </section>
+
+            <section class="panel detail-panel">
+              <div class="section-heading">
+                <h2>专业服务转化</h2>
+              </div>
+              <div class="service-flow">
+                <div>
+                  <span>设计方案</span>
+                  <strong>预约改造概念方案</strong>
+                  <small>把现状图纸、楼层面积和定位转成可测算方案。</small>
+                </div>
+                <div>
+                  <span>运营承接</span>
+                  <strong>验证业态与招商</strong>
+                  <small>复核品牌锚点、租金区间和出租率假设。</small>
+                </div>
+                <div>
+                  <span>投融资退出</span>
+                  <strong>生成投资人摘要</strong>
+                  <small>整理 NOI、回收期、风险和下一轮尽调事项。</small>
+                </div>
+              </div>
+            </section>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
